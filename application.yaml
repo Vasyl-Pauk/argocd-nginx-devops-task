@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-application
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: owlenjoyer/nginx-custom
+    argocd-image-updater.argoproj.io/nginx-custom.update-strategy: latest
+    argocd-image-updater.argoproj.io/nginx-custom.helm-values: image.tag
+spec:
+  project: default
+
+  source:
+    repoURL: 'https://github.com/Vasyl-Pauk/argocd-nginx-devops-task.git'
+    targetRevision: HEAD
+    path: nginx-custom
+
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: default
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
