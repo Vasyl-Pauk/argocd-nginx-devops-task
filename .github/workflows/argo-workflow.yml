@@ -1,0 +1,34 @@
+name: argocd-nginx-custom-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: docker.io
+  IMAGE_NAME: owlenjoyer/nginx-custom
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image with commit SHA tag
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+          docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+
+      - name: Push Docker image
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::7}
+          docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
