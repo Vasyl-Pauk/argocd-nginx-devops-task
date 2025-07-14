@@ -3,10 +3,7 @@ kind: Application
 metadata:
   name: argocd-application
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: owlenjoyer/nginx-custom
-    argocd-image-updater.argoproj.io/nginx-custom.update-strategy: digest
-    argocd-image-updater.argoproj.io/nginx-custom.helm-values: image.tag
+
 spec:
   project: default
 

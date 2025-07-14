@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - 'nginx-custom/values.yaml' 
+      - 'nginx-custom/values.yaml'
 env:
   REGISTRY: docker.io
   IMAGE_NAME: owlenjoyer/nginx-custom
@@ -18,18 +18,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build Docker image with commit SHA tag
+      - name: Extract short SHA
+        id: vars
+        run: echo "sha_short=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image with SHA tag
         run: |
-          IMAGE_TAG=${GITHUB_SHA::7}
-          docker build -t $REGISTRY/$IMAGE_NAME:$IMAGE_TAG .
+          docker build -t $REGISTRY/$IMAGE_NAME:${{ steps.vars.outputs.sha_short }} .
 
       - name: Push Docker image
         run: |
-          IMAGE_TAG=${GITHUB_SHA::7}
-          docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
+          docker push $REGISTRY/$IMAGE_NAME:${{ steps.vars.outputs.sha_short }}
+
+      - name: Update values.yaml with new image tag
+        run: |
+          sed -i "s/^  tag: .*/  tag: ${{ steps.vars.outputs.sha_short }}/" nginx-custom/values.yaml
+
+      - name: Commit and push changes
+        run: |
+          git add nginx-custom/values.yaml
+          git commit -m "Update image tag to ${{ steps.vars.outputs.sha_short }}"
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
