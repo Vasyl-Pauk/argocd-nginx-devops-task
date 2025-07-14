@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-
+    paths-ignore:
+      - 'nginx-custom/values.yaml' 
 env:
   REGISTRY: docker.io
   IMAGE_NAME: owlenjoyer/nginx-custom
