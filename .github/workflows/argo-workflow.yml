@@ -43,12 +43,12 @@ jobs:
 
       - name: Update values.yaml with new image tag
         run: |
-          sed -i "s/^  tag: .*/  tag: ${{ steps.vars.outputs.sha_short }}/" nginx-custom/values.yaml
+          sed -i "s/^  tag: .*/  tag: \"${{ steps.vars.outputs.sha_short }}\"/" nginx-custom/values.yaml
 
       - name: Commit and push changes
         run: |
           git add nginx-custom/values.yaml
-          git commit -m "Update image tag to ${{ steps.vars.outputs.sha_short }}"
+          git commit -m "Update image tag to ${{ steps.vars.outputs.sha_short }}" || echo "No changes to commit"
           git push
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
