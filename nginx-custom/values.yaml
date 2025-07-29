@@ -1,6 +1,6 @@
 image:
   repository: owlenjoyer/nginx-custom
-  tag: "5138b91"
+  tag: "ecfdf63"
 
 replicaCount: 2
 
