@@ -1,6 +1,6 @@
 image:
   repository: owlenjoyer/nginx-custom
-  tag: "35f21e5"
+  tag: "cac9281"
 
 replicaCount: 2
 
