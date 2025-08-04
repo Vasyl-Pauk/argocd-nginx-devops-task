@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-application
+  name: nginx-application
   namespace: argocd
 
 spec:
   project: default
 
   source:
-    repoURL: 'https://github.com/Vasyl-Pauk/argocd-nginx-devops-task.git'
-    targetRevision: HEAD
+    repoURL: https://github.com/Vasyl-Pauk/argocd-nginx-devops-task.git
+    targetRevision: main
     path: nginx-custom
 
   destination:

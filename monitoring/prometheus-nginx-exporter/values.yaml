@@ -1,0 +1,16 @@
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  namespace: monitoring
+  path: /metrics
+  port: http
+  scrapeTimeout: 10s
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: nginx-exporter
+      app.kubernetes.io/name: prometheus-nginx-exporter
+  targetLabels:
+    - app.kubernetes.io/instance
+  additionalLabels:
+    release: prometheus
+
